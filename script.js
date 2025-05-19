@@ -18,19 +18,29 @@ cubes.forEach(cube => {
   let offsetY = 0;
   let isDragging = false;
 
-  cube.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    cube.style.cursor = 'grabbing';
-    offsetX = e.clientX - cube.offsetLeft;
-    offsetY = e.clientY - cube.offsetTop;
+  // cube.addEventListener('mousedown', (e) => {
+  //   isDragging = true;
+  //   cube.style.cursor = 'grabbing';
+  //   offsetX = e.clientX - cube.offsetLeft;
+  //   offsetY = e.clientY - cube.offsetTop;
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  });
+  //   document.addEventListener('mousemove', onMouseMove);
+  //   document.addEventListener('mouseup', onMouseUp);
+  // });
+	cube.addEventListener('mousedown', (e) => {
+  console.log('Mouse down on cube:', cube);
+  isDragging = true;
+  cube.style.cursor = 'grabbing';
+  offsetX = e.clientX - cube.offsetLeft;
+  offsetY = e.clientY - cube.offsetTop;
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+});
 
   function onMouseMove(e) {
     if (!isDragging) return;
-
+console.log('Dragging cube:', cube);
     const containerBounds = container.getBoundingClientRect();
     const cubeWidth = cube.offsetWidth;
     const cubeHeight = cube.offsetHeight;
@@ -47,10 +57,17 @@ cubes.forEach(cube => {
     cube.style.top = `${y}px`;
   }
 
-  function onMouseUp() {
-    isDragging = false;
-    cube.style.cursor = 'grab';
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
+  // function onMouseUp() {
+  //   isDragging = false;
+  //   cube.style.cursor = 'grab';
+  //   document.removeEventListener('mousemove', onMouseMove);
+  //   document.removeEventListener('mouseup', onMouseUp);
+  // }
+	function onMouseUp() {
+  console.log('Mouse up on cube:', cube);
+  isDragging = false;
+  cube.style.cursor = 'grab';
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
 });
