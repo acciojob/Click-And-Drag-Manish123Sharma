@@ -1,50 +1,56 @@
-// Your code here.
 const container = document.querySelector('.items');
-const items = document.querySelectorAll('.item');
+const cubes = document.querySelectorAll('.item');
 
-items.forEach(item => {
-  item.style.position = 'absolute'; // allow free movement
-  item.style.cursor = 'grab';
+cubes.forEach(cube => {
+  cube.style.position = 'absolute';
+  cube.style.cursor = 'grab';
+
+  // Save initial positions so they can start in a grid
+  const rect = cube.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+  const initialLeft = rect.left - containerRect.left;
+  const initialTop = rect.top - containerRect.top;
+
+  cube.style.left = `${initialLeft}px`;
+  cube.style.top = `${initialTop}px`;
 
   let offsetX = 0;
   let offsetY = 0;
   let isDragging = false;
 
-  item.addEventListener('mousedown', (e) => {
+  cube.addEventListener('mousedown', (e) => {
     isDragging = true;
-    item.style.cursor = 'grabbing';
-
-    const rect = item.getBoundingClientRect();
-    const containerRect = container.getBoundingClientRect();
-
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-
-    // Bring dragged item to front
-    item.style.zIndex = 1000;
-
-    function onMouseMove(e) {
-      if (!isDragging) return;
-
-      let x = e.clientX - containerRect.left - offsetX;
-      let y = e.clientY - containerRect.top - offsetY;
-
-      // Boundaries
-      x = Math.max(0, Math.min(x, container.clientWidth - item.offsetWidth));
-      y = Math.max(0, Math.min(y, container.clientHeight - item.offsetHeight));
-
-      item.style.left = `${x}px`;
-      item.style.top = `${y}px`;
-    }
-
-    function onMouseUp() {
-      isDragging = false;
-      item.style.cursor = 'grab';
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    }
+    cube.style.cursor = 'grabbing';
+    offsetX = e.clientX - cube.offsetLeft;
+    offsetY = e.clientY - cube.offsetTop;
 
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
+
+  function onMouseMove(e) {
+    if (!isDragging) return;
+
+    const containerBounds = container.getBoundingClientRect();
+    const cubeWidth = cube.offsetWidth;
+    const cubeHeight = cube.offsetHeight;
+
+    // Calculate new position
+    let x = e.clientX - offsetX - containerBounds.left;
+    let y = e.clientY - offsetY - containerBounds.top;
+
+    // Boundary conditions
+    x = Math.max(0, Math.min(container.clientWidth - cubeWidth, x));
+    y = Math.max(0, Math.min(container.clientHeight - cubeHeight, y));
+
+    cube.style.left = `${x}px`;
+    cube.style.top = `${y}px`;
+  }
+
+  function onMouseUp() {
+    isDragging = false;
+    cube.style.cursor = 'grab';
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
 });
